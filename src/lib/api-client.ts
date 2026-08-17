@@ -1,6 +1,9 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { parseApiError } from './api-error';
 
+const LOCAL_API_URL = 'http://localhost:4000/api';
+const PRODUCTION_API_URL = 'https://suppliers-management-backend.onrender.com/api';
+
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
 };
@@ -9,8 +12,30 @@ type NormalizedErrorCarrier = {
   normalizedError?: ReturnType<typeof parseApiError>;
 };
 
+function getApiBaseUrl() {
+  const configuredUrl = process.env.NEXT_PUBLIC_API_URL || LOCAL_API_URL;
+
+  if (typeof window === 'undefined') {
+    return configuredUrl;
+  }
+
+  const isLocalApp =
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1';
+  const pointsToLocalApi =
+    configuredUrl.includes('localhost') || configuredUrl.includes('127.0.0.1');
+
+  if (!isLocalApp && pointsToLocalApi) {
+    return PRODUCTION_API_URL;
+  }
+
+  return configuredUrl;
+}
+
+const API_BASE_URL = getApiBaseUrl();
+
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api',
+  baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
 });
@@ -53,11 +78,7 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api'}/auth/refresh`,
-          {},
-          { withCredentials: true },
-        );
+        await axios.post(`${API_BASE_URL}/auth/refresh`, {}, { withCredentials: true });
         processQueue(null);
         return apiClient(originalRequest);
       } catch (refreshError) {
