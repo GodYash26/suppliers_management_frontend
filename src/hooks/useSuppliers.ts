@@ -14,7 +14,7 @@ export type { NormalizedApiError };
 
 export const SUPPLIER_KEYS = {
   all: ['suppliers'] as const,
-  one: (id: string) => ['suppliers', id] as const,
+  one: (id: string) => ['supplier', id] as const,
 };
 
 /**

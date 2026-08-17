@@ -4,6 +4,8 @@ export type SupplierStatus =
   | 'APPROVED'
   | 'REJECTED';
 
+export type SupplierRole = 'REQUESTER' | 'APPROVER';
+
 export interface Supplier {
   id: string;
   companyName: string;
@@ -12,9 +14,12 @@ export interface Supplier {
   contactEmail: string;
   status: SupplierStatus;
   createdBy: string;
+  createdById: string;
   createdAt: string;
   approvedBy?: string;
+  approvedById?: string;
   rejectedBy?: string;
+  rejectedById?: string;
   rejectionReason?: string;
 }
 

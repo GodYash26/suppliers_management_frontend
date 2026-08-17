@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Geist } from 'next/font/google';
 import './globals.css';
 import { QueryProvider } from '@/providers/query-provider';
-import { UserProvider } from '@/context/user-context';
+import { AuthProvider } from '@/context/auth-context';
 import { Navbar } from '@/components/navbar';
 import { Toaster } from '@/components/ui/sonner';
 
@@ -22,13 +22,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={geist.className}>
         <QueryProvider>
-          <UserProvider>
+          <AuthProvider>
             <div className="min-h-screen bg-gray-50">
               <Navbar />
               <main className="max-w-6xl mx-auto px-4 py-8">{children}</main>
             </div>
             <Toaster richColors position="top-right" />
-          </UserProvider>
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>

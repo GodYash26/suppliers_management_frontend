@@ -7,6 +7,12 @@ export interface NormalizedApiError {
   details?: string[];
 }
 
+type ApiErrorBody = {
+  code?: string;
+  message?: string | string[];
+  error?: string;
+};
+
 /**
  * Parses any error (AxiosError, Error, string, object) into a standardized NormalizedApiError structure.
  */
@@ -24,7 +30,7 @@ export function parseApiError(error: unknown): NormalizedApiError {
 
     // Server responded with a status code outside of 2xx range
     if (response) {
-      const data = response.data as Record<string, any> | undefined;
+      const data = response.data as ApiErrorBody | undefined;
       const status = response.status;
 
       if (data) {
@@ -95,7 +101,26 @@ export function parseApiError(error: unknown): NormalizedApiError {
  * Helper to get a human-readable message string directly from any error.
  */
 export function getErrorMessage(error: unknown): string {
-  return parseApiError(error).message;
+  const parsed = parseApiError(error);
+
+  switch (parsed.code) {
+    case 'VALIDATION_ERROR':
+      return parsed.message || 'Please check the form and try again.';
+    case 'SUPPLIER_NOT_FOUND':
+      return 'Supplier not found.';
+    case 'VAT_ID_ALREADY_EXISTS':
+      return 'A supplier with this VAT ID already exists.';
+    case 'SUPPLIER_EMAIL_ALREADY_EXISTS':
+      return 'A supplier with this contact email already exists.';
+    case 'INVALID_STATUS_TRANSITION':
+      return parsed.message || 'This supplier cannot be moved to that status.';
+    case 'SELF_APPROVAL_NOT_ALLOWED':
+      return 'You cannot approve or reject a supplier you created.';
+    case 'REJECTION_REASON_REQUIRED':
+      return 'Enter a rejection reason before rejecting this supplier.';
+    default:
+      return parsed.message;
+  }
 }
 
 function isAxiosError(error: unknown): error is AxiosError {
