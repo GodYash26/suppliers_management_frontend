@@ -181,12 +181,12 @@ Create a `.env.local` file in the `frontend/` directory:
 
 ```env
 # Backend API base URL (no trailing slash)
-NEXT_PUBLIC_API_URL=http://localhost:4001
+NEXT_PUBLIC_API_URL=http://localhost:4000
 ```
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `NEXT_PUBLIC_API_URL` | Backend API base URL | `http://localhost:4001` |
+| `NEXT_PUBLIC_API_URL` |  `http://localhost:4000` |
 
 ---
 
@@ -318,4 +318,4 @@ The UI renders available actions based on the authenticated user's role and the 
 - [Zod Documentation](https://zod.dev/)
 - [Sonner Toast Library](https://sonner.emilkowal.ski/)
 - [Backend API README](../backend/README.md)
-- [Live API Docs (local)](http://localhost:4001/api/docs)
+- [Live API Docs (local)](http://localhost:4000/api/docs)
